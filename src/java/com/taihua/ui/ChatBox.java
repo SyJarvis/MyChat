@@ -15,7 +15,6 @@ public class ChatBox extends JFrame {
     private JMenuItem publicChat; // 群聊
 
     private ChatWindow chatWindow; // 聊天窗口
-
     public static JLabel userInfo; // 用户信息，聊天窗口北边
 
     public JTextField textField; // 文本输入框
@@ -52,6 +51,7 @@ public class ChatBox extends JFrame {
         privateChat = new JMenuItem("私聊");
         publicChat = new JMenuItem("群聊");
 
+
         userInfo = new JLabel("未登录");
         // 设置标签的位置
         userInfo.setHorizontalAlignment(JLabel.CENTER);
@@ -74,8 +74,6 @@ public class ChatBox extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(userInfo, BorderLayout.NORTH); // 北方
         this.add(chatWindow, BorderLayout.CENTER); // 中间
-
-
     }
 
     public void addListener(){
