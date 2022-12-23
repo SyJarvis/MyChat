@@ -1,4 +1,4 @@
-package utils;
+package com.taihua.utils;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;

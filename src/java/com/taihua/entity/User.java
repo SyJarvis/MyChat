@@ -1,4 +1,4 @@
-package entity;
+package com.taihua.entity;
 
 import java.util.Date;
 
