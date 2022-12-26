@@ -1,7 +1,13 @@
 package com.taihua.ui;
 
+import com.taihua.entity.User;
+import com.taihua.service.UserService;
+import com.taihua.utils.Helper;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class ChatBox extends JFrame {
 
@@ -17,11 +23,7 @@ public class ChatBox extends JFrame {
     private ChatWindow chatWindow; // 聊天窗口
     public static JLabel userInfo; // 用户信息，聊天窗口北边
 
-    public JTextField textField; // 文本输入框
-    public JButton button; // 发送框
-
-
-
+    UserService userService = new UserService();
     public ChatBox(){
         super("聊天程序v1.0");
 
@@ -74,10 +76,68 @@ public class ChatBox extends JFrame {
         this.setLayout(new BorderLayout());
         this.add(userInfo, BorderLayout.NORTH); // 北方
         this.add(chatWindow, BorderLayout.CENTER); // 中间
+
+        chatWindow.setLoginStatus(0);
     }
 
     public void addListener(){
         // 监听事件
+        register.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = JOptionPane.showInputDialog("请输入用户名");
+                if (userService.checkUser(username) != null){
+                    JOptionPane.showConfirmDialog(null, "已有此用户", "提示",JOptionPane.DEFAULT_OPTION);
+                    return;
+                };
+                String password = JOptionPane.showInputDialog("请输入密码");
+                User user = new User(0, username, password, 1, Helper.getDateTime(), Helper.getDateTime());
+                int result = userService.register(user);
+                if (result==1){
+                    JOptionPane.showConfirmDialog(null, "已注册成功", "提示",JOptionPane.DEFAULT_OPTION);
+                }else {
+                    JOptionPane.showConfirmDialog(null, "注册失败", "提示",JOptionPane.DEFAULT_OPTION);
+                }
+            }
+        });
+
+        login.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = JOptionPane.showInputDialog("请输入用户名");
+                User user = userService.checkUser(username);
+                if (user == null){
+                    JOptionPane.showConfirmDialog(null, "此用户未注册", "提示",JOptionPane.DEFAULT_OPTION);
+                    return;
+                };
+                String password = JOptionPane.showInputDialog("请输入密码");
+                if (user.getPassword().equals(password)){
+                    JOptionPane.showConfirmDialog(null, "登录成功", "提示",JOptionPane.DEFAULT_OPTION);
+                    userInfo.setText(user.getUsername());
+                    chatWindow.setLoginStatus(1);
+                    chatWindow.setUser(user);
+                    chatWindow.connectServer();
+                } else {
+                    JOptionPane.showConfirmDialog(null, "登录失败", "提示",JOptionPane.DEFAULT_OPTION);
+                }
+            }
+        });
+
+        privateChat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chatWindow.setFlag(1);
+                JOptionPane.showConfirmDialog(null, "私聊模式", "提示",JOptionPane.DEFAULT_OPTION);
+            }
+        });
+
+        publicChat.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                chatWindow.setFlag(2);
+                JOptionPane.showConfirmDialog(null, "群聊模式", "提示",JOptionPane.DEFAULT_OPTION);
+            }
+        });
     }
     public static void main(String[] args) {
         new ChatBox();
